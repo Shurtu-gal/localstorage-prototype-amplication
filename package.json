@@ -1,0 +1,32 @@
+{
+  "name": "localstorage-prototype-amplication",
+  "version": "1.0.0",
+  "description": "This is a sample project made during amplication internship to research on localstorage integration.",
+  "scripts": {
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "husky": "^8.0.3",
+    "lint-staged": "^14.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shurtu-gal/localstorage-prototype-amplication.git"
+  },
+  "keywords": [
+    "localstorage",
+    "NestJS",
+    "Amplication",
+    "Backend",
+    "Projects"
+  ],
+  "author": "Ashish Padhy <100484401+Shurtu-gal@users.noreply.github.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Shurtu-gal/localstorage-prototype-amplication/issues"
+  },
+  "homepage": "https://github.com/Shurtu-gal/localstorage-prototype-amplication#readme",
+  "workspaces": [
+    "**/*"
+  ]
+}
