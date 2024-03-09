@@ -1,0 +1,651 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""GraphQL representation of BigInt"""
+scalar BigInt
+
+input BigIntFilter {
+  equals: BigInt
+  gt: BigInt
+  gte: BigInt
+  in: [BigInt!]
+  lt: BigInt
+  lte: BigInt
+  not: BigInt
+  notIn: [BigInt!]
+}
+
+input BigIntNullableFilter {
+  equals: BigInt
+  gt: BigInt
+  gte: BigInt
+  in: [BigInt!]
+  lt: BigInt
+  lte: BigInt
+  not: BigInt
+  notIn: [BigInt!]
+}
+
+input BooleanFilter {
+  equals: Boolean
+  not: Boolean
+}
+
+input BooleanNullableFilter {
+  equals: Boolean
+  not: Boolean
+}
+
+type Customer {
+  averageSale: Float
+  birthData: DateTime
+  comments: String
+  createdAt: DateTime!
+  customerType: EnumCustomerCustomerType
+  email: String!
+  favoriteColors: [EnumCustomerFavoriteColors!]
+  favoriteNumber: BigInt
+  firstName: String
+  geoLocation: String
+  id: BigInt!
+  isVip: Boolean
+  lastName: String
+  orders(orderBy: [OrderOrderByInput!], skip: Float, take: Float, where: OrderWhereInput): [Order!]!
+  organization: Organization
+  updatedAt: DateTime!
+  vipOrganization: Organization
+}
+
+input CustomerCreateInput {
+  averageSale: Float
+  birthData: DateTime
+  comments: String
+  customerType: EnumCustomerCustomerType
+  email: String!
+  favoriteColors: [EnumCustomerFavoriteColors!]
+  favoriteNumber: BigInt
+  firstName: String
+  geoLocation: String
+  isVip: Boolean
+  lastName: String
+  orders: OrderCreateNestedManyWithoutCustomersInput
+  organization: OrganizationWhereUniqueInput
+  vipOrganization: OrganizationWhereUniqueInput
+}
+
+input CustomerCreateNestedManyWithoutOrganizationsInput {
+  connect: [CustomerWhereUniqueInput!]
+}
+
+input CustomerListRelationFilter {
+  every: CustomerWhereInput
+  none: CustomerWhereInput
+  some: CustomerWhereInput
+}
+
+input CustomerOrderByInput {
+  averageSale: SortOrder
+  birthData: SortOrder
+  comments: SortOrder
+  createdAt: SortOrder
+  customerType: SortOrder
+  email: SortOrder
+  favoriteColors: SortOrder
+  favoriteNumber: SortOrder
+  firstName: SortOrder
+  geoLocation: SortOrder
+  id: SortOrder
+  isVip: SortOrder
+  lastName: SortOrder
+  organizationId: SortOrder
+  updatedAt: SortOrder
+  vipOrganizationId: SortOrder
+}
+
+input CustomerUpdateInput {
+  averageSale: Float
+  birthData: DateTime
+  comments: String
+  customerType: EnumCustomerCustomerType
+  email: String
+  favoriteColors: [EnumCustomerFavoriteColors!]
+  favoriteNumber: BigInt
+  firstName: String
+  geoLocation: String
+  isVip: Boolean
+  lastName: String
+  orders: OrderUpdateManyWithoutCustomersInput
+  organization: OrganizationWhereUniqueInput
+  vipOrganization: OrganizationWhereUniqueInput
+}
+
+input CustomerUpdateManyWithoutOrganizationsInput {
+  connect: [CustomerWhereUniqueInput!]
+  disconnect: [CustomerWhereUniqueInput!]
+  set: [CustomerWhereUniqueInput!]
+}
+
+input CustomerWhereInput {
+  averageSale: DecimalNullableFilter
+  birthData: DateTimeNullableFilter
+  comments: StringNullableFilter
+  createdAt: DateTimeFilter
+  customerType: EnumCustomerCustomerType
+  email: StringFilter
+  favoriteNumber: BigIntNullableFilter
+  firstName: StringNullableFilter
+  geoLocation: StringNullableFilter
+  id: BigIntFilter
+  isVip: BooleanNullableFilter
+  lastName: StringNullableFilter
+  orders: OrderListRelationFilter
+  organization: OrganizationWhereUniqueInput
+  updatedAt: DateTimeFilter
+  vipOrganization: OrganizationWhereUniqueInput
+}
+
+input CustomerWhereUniqueInput {
+  id: BigInt!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input DateTimeFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: DateTime
+  notIn: [DateTime!]
+}
+
+input DateTimeNullableFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: DateTime
+  notIn: [DateTime!]
+}
+
+input DecimalNullableFilter {
+  equals: Float
+  gt: Float
+  gte: Float
+  in: [Float!]
+  lt: Float
+  lte: Float
+  not: Float
+  notIn: [Float!]
+}
+
+type Empty {
+  createdAt: DateTime!
+  id: String!
+  updatedAt: DateTime!
+}
+
+input EmptyOrderByInput {
+  createdAt: SortOrder
+  id: SortOrder
+  updatedAt: SortOrder
+}
+
+input EmptyWhereInput {
+  createdAt: DateTimeFilter
+  id: StringFilter
+  updatedAt: DateTimeFilter
+}
+
+input EmptyWhereUniqueInput {
+  id: String!
+}
+
+enum EnumCustomerCustomerType {
+  Bronze
+  Gold
+  Platinum
+  Regular
+}
+
+enum EnumCustomerFavoriteColors {
+  Green
+  Purple
+  Red
+  Yellow
+}
+
+enum EnumOrderLabel {
+  Fragile
+}
+
+enum EnumOrderStatus {
+  Done
+  InProgress
+  Pending
+}
+
+enum EnumUserInterests {
+  Design
+  Programming
+}
+
+enum EnumUserPriority {
+  High
+  Low
+  Medium
+}
+
+input IntFilter {
+  equals: Int
+  gt: Int
+  gte: Int
+  in: [Int!]
+  lt: Int
+  lte: Int
+  not: Int
+  notIn: [Int!]
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
+"""
+The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSONObject
+
+input JsonFilter {
+  equals: JSONObject
+  not: JSONObject
+}
+
+type Mutation {
+  createCustomer(data: CustomerCreateInput!): Customer!
+  createOrder(data: OrderCreateInput!): Order!
+  createOrganization(data: OrganizationCreateInput!): Organization!
+  createProfile(data: ProfileCreateInput!): Profile!
+  createUser(data: UserCreateInput!): User!
+  deleteCustomer(where: CustomerWhereUniqueInput!): Customer!
+  deleteEmpty(where: EmptyWhereUniqueInput!): Empty!
+  deleteOrder(where: OrderWhereUniqueInput!): Order!
+  deleteOrganization(where: OrganizationWhereUniqueInput!): Organization!
+  deleteProfile(where: ProfileWhereUniqueInput!): Profile!
+  updateCustomer(data: CustomerUpdateInput!, where: CustomerWhereUniqueInput!): Customer!
+  updateOrder(data: OrderUpdateInput!, where: OrderWhereUniqueInput!): Order!
+  updateOrganization(data: OrganizationUpdateInput!, where: OrganizationWhereUniqueInput!): Organization!
+  updateProfile(data: ProfileUpdateInput!, where: ProfileWhereUniqueInput!): Profile!
+  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User!
+}
+
+type Order {
+  createdAt: DateTime!
+  customer: Customer
+  id: String!
+  label: EnumOrderLabel
+  status: EnumOrderStatus
+  updatedAt: DateTime!
+}
+
+input OrderCreateInput {
+  customer: CustomerWhereUniqueInput!
+  label: EnumOrderLabel
+  status: EnumOrderStatus!
+}
+
+input OrderCreateNestedManyWithoutCustomersInput {
+  connect: [OrderWhereUniqueInput!]
+}
+
+input OrderListRelationFilter {
+  every: OrderWhereInput
+  none: OrderWhereInput
+  some: OrderWhereInput
+}
+
+input OrderOrderByInput {
+  createdAt: SortOrder
+  customerId: SortOrder
+  id: SortOrder
+  label: SortOrder
+  status: SortOrder
+  updatedAt: SortOrder
+}
+
+input OrderUpdateInput {
+  customer: CustomerWhereUniqueInput
+  label: EnumOrderLabel
+  status: EnumOrderStatus
+}
+
+input OrderUpdateManyWithoutCustomersInput {
+  connect: [OrderWhereUniqueInput!]
+  disconnect: [OrderWhereUniqueInput!]
+  set: [OrderWhereUniqueInput!]
+}
+
+input OrderWhereInput {
+  createdAt: DateTimeFilter
+  customer: CustomerWhereUniqueInput
+  id: StringFilter
+  label: EnumOrderLabel
+  status: EnumOrderStatus
+  updatedAt: DateTimeFilter
+}
+
+input OrderWhereUniqueInput {
+  id: String!
+}
+
+type Organization {
+  createdAt: DateTime!
+  customers(orderBy: [CustomerOrderByInput!], skip: Float, take: Float, where: CustomerWhereInput): [Customer!]!
+  id: String!
+  name: String!
+  updatedAt: DateTime!
+  users(orderBy: [UserOrderByInput!], skip: Float, take: Float, where: UserWhereInput): [User!]!
+  vipCustomers(orderBy: [CustomerOrderByInput!], skip: Float, take: Float, where: CustomerWhereInput): [Customer!]!
+}
+
+input OrganizationCreateInput {
+  customers: CustomerCreateNestedManyWithoutOrganizationsInput
+  name: String!
+  users: UserCreateNestedManyWithoutOrganizationsInput
+  vipCustomers: CustomerCreateNestedManyWithoutOrganizationsInput
+}
+
+input OrganizationCreateNestedManyWithoutUsersInput {
+  connect: [OrganizationWhereUniqueInput!]
+}
+
+input OrganizationListRelationFilter {
+  every: OrganizationWhereInput
+  none: OrganizationWhereInput
+  some: OrganizationWhereInput
+}
+
+input OrganizationOrderByInput {
+  createdAt: SortOrder
+  id: SortOrder
+  name: SortOrder
+  updatedAt: SortOrder
+}
+
+input OrganizationUpdateInput {
+  customers: CustomerUpdateManyWithoutOrganizationsInput
+  name: String
+  users: UserUpdateManyWithoutOrganizationsInput
+  vipCustomers: CustomerUpdateManyWithoutOrganizationsInput
+}
+
+input OrganizationUpdateManyWithoutUsersInput {
+  connect: [OrganizationWhereUniqueInput!]
+  disconnect: [OrganizationWhereUniqueInput!]
+  set: [OrganizationWhereUniqueInput!]
+}
+
+input OrganizationWhereInput {
+  createdAt: DateTimeFilter
+  customers: CustomerListRelationFilter
+  id: StringFilter
+  name: StringFilter
+  updatedAt: DateTimeFilter
+  users: UserListRelationFilter
+  vipCustomers: CustomerListRelationFilter
+}
+
+input OrganizationWhereUniqueInput {
+  id: String!
+}
+
+type Profile {
+  createdAt: DateTime!
+  createdIn: DateTime!
+  email: String!
+  id: Float!
+  updatedAt: DateTime!
+  updatedIn: DateTime!
+  user: User
+}
+
+input ProfileCreateInput {
+  createdAt: DateTime!
+  email: String!
+  updatedAt: DateTime!
+  user: UserWhereUniqueInput
+}
+
+input ProfileOrderByInput {
+  createdAt: SortOrder
+  createdIn: SortOrder
+  email: SortOrder
+  id: SortOrder
+  updatedAt: SortOrder
+  updatedIn: SortOrder
+  userId: SortOrder
+}
+
+input ProfileUpdateInput {
+  createdAt: DateTime
+  email: String
+  updatedAt: DateTime
+  user: UserWhereUniqueInput
+}
+
+input ProfileWhereInput {
+  createdAt: DateTimeFilter
+  createdIn: DateTimeFilter
+  email: StringFilter
+  id: IntFilter
+  updatedAt: DateTimeFilter
+  updatedIn: DateTimeFilter
+  user: UserWhereUniqueInput
+}
+
+input ProfileWhereUniqueInput {
+  id: Float!
+}
+
+type PromoteUserInput {
+  extendedProfile: JSON
+  isAdmin: Boolean!
+  lastLogin: DateTime!
+  score: Float!
+  selfReference: PromoteUserInput
+  selfReferenceArray: [PromoteUserInput!]
+  userId: [String!]!
+  weightedScore: Float
+}
+
+type Query {
+  customer(where: CustomerWhereUniqueInput!): Customer
+  customers(orderBy: [CustomerOrderByInput!], skip: Float, take: Float, where: CustomerWhereInput): [Customer!]!
+  empties(orderBy: [EmptyOrderByInput!], skip: Float, take: Float, where: EmptyWhereInput): [Empty!]!
+  empty(where: EmptyWhereUniqueInput!): Empty
+  order(where: OrderWhereUniqueInput!): Order
+  orders(orderBy: [OrderOrderByInput!], skip: Float, take: Float, where: OrderWhereInput): [Order!]!
+  organization(where: OrganizationWhereUniqueInput!): Organization
+  organizations(orderBy: [OrganizationOrderByInput!], skip: Float, take: Float, where: OrganizationWhereInput): [Organization!]!
+  profile(where: ProfileWhereUniqueInput!): Profile
+  profiles(orderBy: [ProfileOrderByInput!], skip: Float, take: Float, where: ProfileWhereInput): [Profile!]!
+  user(where: UserWhereUniqueInput!): User
+}
+
+enum QueryMode {
+  Default
+  Insensitive
+}
+
+enum SortOrder {
+  Asc
+  Desc
+}
+
+input StringFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  mode: QueryMode
+  not: String
+  notIn: [String!]
+  startsWith: String
+}
+
+input StringNullableFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  mode: QueryMode
+  not: String
+  notIn: [String!]
+  startsWith: String
+}
+
+type User {
+  age: Float!
+  bio: String!
+  birthDate: DateTime!
+  email: String!
+  employees(orderBy: [UserOrderByInput!], skip: Float, take: Float, where: UserWhereInput): [User!]!
+  extendedProperties: JSON!
+  id: String!
+  interests: [EnumUserInterests!]
+  isCurious: Boolean!
+  location: String!
+  manager: User
+  name: String!
+  organizations(orderBy: [OrganizationOrderByInput!], skip: Float, take: Float, where: OrganizationWhereInput): [Organization!]!
+  priority: EnumUserPriority
+  profile: Profile
+  roles: JSON!
+  score: Float!
+  username: String!
+}
+
+input UserCreateInput {
+  age: Float!
+  bio: String!
+  birthDate: DateTime!
+  email: String!
+  employees: UserCreateNestedManyWithoutUsersInput
+  extendedProperties: JSON!
+  interests: [EnumUserInterests!]
+  isCurious: Boolean!
+  location: String!
+  manager: UserWhereUniqueInput
+  name: String!
+  organizations: OrganizationCreateNestedManyWithoutUsersInput
+  password: String!
+  priority: EnumUserPriority!
+  profile: ProfileWhereUniqueInput
+  roles: JSON!
+  score: Float!
+  username: String!
+}
+
+input UserCreateNestedManyWithoutOrganizationsInput {
+  connect: [UserWhereUniqueInput!]
+}
+
+input UserCreateNestedManyWithoutUsersInput {
+  connect: [UserWhereUniqueInput!]
+}
+
+input UserListRelationFilter {
+  every: UserWhereInput
+  none: UserWhereInput
+  some: UserWhereInput
+}
+
+input UserOrderByInput {
+  age: SortOrder
+  bio: SortOrder
+  birthDate: SortOrder
+  email: SortOrder
+  extendedProperties: SortOrder
+  id: SortOrder
+  interests: SortOrder
+  isCurious: SortOrder
+  location: SortOrder
+  managerId: SortOrder
+  name: SortOrder
+  password: SortOrder
+  priority: SortOrder
+  profileId: SortOrder
+  roles: SortOrder
+  score: SortOrder
+  username: SortOrder
+}
+
+input UserUpdateInput {
+  age: Float
+  bio: String
+  birthDate: DateTime
+  email: String
+  employees: UserUpdateManyWithoutUsersInput
+  extendedProperties: JSON
+  interests: [EnumUserInterests!]
+  isCurious: Boolean
+  location: String
+  manager: UserWhereUniqueInput
+  name: String
+  organizations: OrganizationUpdateManyWithoutUsersInput
+  password: String
+  priority: EnumUserPriority
+  profile: ProfileWhereUniqueInput
+  roles: JSON
+  score: Float
+  username: String
+}
+
+input UserUpdateManyWithoutOrganizationsInput {
+  connect: [UserWhereUniqueInput!]
+  disconnect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+}
+
+input UserUpdateManyWithoutUsersInput {
+  connect: [UserWhereUniqueInput!]
+  disconnect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+}
+
+input UserWhereInput {
+  age: IntFilter
+  bio: StringFilter
+  birthDate: DateTimeFilter
+  extendedProperties: JsonFilter
+  id: StringFilter
+  isCurious: BooleanFilter
+  location: StringFilter
+  manager: UserWhereUniqueInput
+  name: StringFilter
+  organizations: OrganizationListRelationFilter
+  priority: EnumUserPriority
+  profile: ProfileWhereUniqueInput
+  username: StringFilter
+}
+
+input UserWhereUniqueInput {
+  id: String!
+}

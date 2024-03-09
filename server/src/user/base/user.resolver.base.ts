@@ -153,36 +153,4 @@ export class UserResolverBase {
     }
     return result;
   }
-
-  @graphql.Mutation(() => [PromoteUserInput])
-  async promoteUser(
-    @graphql.Args()
-    args: PromoteUserArgs
-  ): Promise<PromoteUserInput[]> {
-    return this.service.promoteUser(args);
-  }
-
-  @graphql.Mutation(() => Boolean)
-  async sendPasswordResetEmail(
-    @graphql.Args()
-    args: PromoteUserInput
-  ): Promise<boolean> {
-    return this.service.sendPasswordResetEmail(args);
-  }
-
-  @graphql.Query(() => PromoteUserInput)
-  async resendInviteEmail(
-    @graphql.Args()
-    args: PromoteUserInput
-  ): Promise<PromoteUserInput> {
-    return this.service.resendInviteEmail(args);
-  }
-
-  @graphql.Mutation(() => PromoteUserInput)
-  async softDeleteUser(
-    @graphql.Args()
-    args: PromoteUserInput
-  ): Promise<PromoteUserInput> {
-    return this.service.softDeleteUser(args);
-  }
 }
