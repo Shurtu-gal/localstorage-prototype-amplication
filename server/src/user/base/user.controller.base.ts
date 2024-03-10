@@ -26,9 +26,53 @@ import { OrganizationFindManyArgs } from "../../organization/base/OrganizationFi
 import { Organization } from "../../organization/base/Organization";
 import { OrganizationWhereUniqueInput } from "../../organization/base/OrganizationWhereUniqueInput";
 import { PromoteUserInput } from "./PromoteUserInput";
+import { createWriteStream } from "fs";
+import { FileInterceptor } from "@nestjs/platform-express";
 
 export class UserControllerBase {
   constructor(protected readonly service: UserService) {}
+
+  @common.Post("/uploadProfilePicture")
+  @common.UseInterceptors(FileInterceptor("file"))
+  @swagger.ApiConsumes("multipart/form-data")
+  @swagger.ApiBody({
+    schema: {
+      type: "object",
+      properties: {
+        file: {
+          type: "string",
+          format: "binary",
+        },
+      },
+    },
+  })
+  @swagger.ApiOkResponse({ type: String })
+  @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  async uploadProfilePicture(
+    @common.UploadedFile() file: Express.Multer.File
+  ): Promise<string> {
+    const { originalname, buffer } = file;
+    console.log("file", file);
+
+    const path = `uploads/${originalname}`;
+
+    const writeStream = createWriteStream(path);
+
+    //store the file in the directory of your choice
+    await new Promise((resolve, reject) => {
+      writeStream.write(buffer, (err) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(0);
+        }
+      });
+    });
+
+    return path;
+  }
+
+
   @common.Post()
   @swagger.ApiCreatedResponse({ type: User })
   async createUser(@common.Body() data: UserCreateInput): Promise<User> {
