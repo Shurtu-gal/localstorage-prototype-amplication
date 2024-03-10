@@ -22,12 +22,42 @@ import { UserFindManyArgs } from "./UserFindManyArgs";
 import { OrganizationFindManyArgs } from "../../organization/base/OrganizationFindManyArgs";
 import { Organization } from "../../organization/base/Organization";
 import { Profile } from "../../profile/base/Profile";
-import { PromoteUserArgs } from "./PromoteUserArgs";
-import { PromoteUserInput } from "./PromoteUserInput";
 import { UserService } from "../user.service";
+import { GraphQLUpload } from 'graphql-upload';
+
+interface FileUpload {
+  filename: string;
+  mimetype: string;
+  encoding: string
+  createReadStream: () => NodeJS.ReadStream;
+}
+
 @graphql.Resolver(() => User)
 export class UserResolverBase {
   constructor(protected readonly service: UserService) {}
+
+  @graphql.Mutation(() => String)
+  async uploadProfilePicture(
+    @graphql.Args({ name: "file", type: () => GraphQLUpload })
+    file: FileUpload,
+  ): Promise<string> {
+    // store the file in the directory of your choice
+    const { createReadStream, filename } = file;
+    const stream = createReadStream();
+    const path = `./uploads/${filename}`;
+
+    //if directory does not exist, create it
+    require("fs").mkdirSync("./uploads", { recursive: true });
+
+    await new Promise((resolve, reject) =>
+      stream
+        .pipe(require("fs").createWriteStream(path))
+        .on("finish", resolve)
+        .on("error", reject)
+    );
+
+    return file.filename;
+  }
 
   async _usersMeta(
     @graphql.Args() args: UserCountArgs
