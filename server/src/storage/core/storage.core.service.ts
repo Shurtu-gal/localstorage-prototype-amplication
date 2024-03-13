@@ -3,6 +3,11 @@ import { ProvidersEnum } from "../providers";
 import { LocalStorageService } from "../providers/local/local.storage.service";
 import { BadRequestException } from "@nestjs/common";
 
+export interface ProviderService {
+  uploadFile(file: FileUpload): Promise<StorageFileCore>;
+  downloadFile(file: StorageFileCore): Promise<Buffer>;
+}
+
 export class StorageServiceCore {
   constructor(
     protected readonly localStorageProvider: LocalStorageService,
@@ -28,7 +33,16 @@ export class StorageServiceCore {
 
     switch (provider) {
       case ProvidersEnum.LOCAL:
-        return this.localStorageProvider.uploadFileLocal(Object.assign(file, { filename: file.filename || (file as Express.Multer.File).originalname }));
+        return this.localStorageProvider.uploadFile(Object.assign(file, { filename: file.filename || (file as Express.Multer.File).originalname }));
+      default:
+        throw new Error('Provider not implemented');
+    }
+  }
+
+  async downloadFile(file: StorageFileCore, provider: ProvidersEnum): Promise<Buffer> {
+    switch (provider) {
+      case ProvidersEnum.LOCAL:
+        return this.localStorageProvider.downloadFile(file);
       default:
         throw new Error('Provider not implemented');
     }

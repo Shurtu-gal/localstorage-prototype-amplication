@@ -1,16 +1,17 @@
 import { FileUpload } from "src/storage/core/types.core";
 import { LocalStorageFile } from "./types";
 import { Injectable } from "@nestjs/common";
+import { ProviderService } from "src/storage/core/storage.core.service";
 
 @Injectable()
-export class LocalStorageService {
+export class LocalStorageService implements ProviderService {
   private readonly basePath: string;
 
   constructor() {
     this.basePath = 'uploads';
   }
 
-  async uploadFileLocal(file: FileUpload): Promise<LocalStorageFile> {
+  async uploadFile(file: FileUpload): Promise<LocalStorageFile> {
     const { createReadStream, filename, buffer } = file;
     const path = `./${this.basePath}/${filename}`;
 
@@ -57,5 +58,18 @@ export class LocalStorageService {
     } else {
       throw new Error('Neither createReadStream nor buffer provided');
     }
+  }
+
+  async downloadFile(file: LocalStorageFile): Promise<Buffer> {
+    const path = file.uuid;
+    return new Promise((resolve, reject) =>
+      require("fs").readFile(path, (err: Error, data: Buffer) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      }
+    ));
   }
 }
