@@ -59,6 +59,20 @@ export class UserResolverBase {
     return file.filename;
   }
 
+  @graphql.Mutation(() => [String])
+  async uploadProfilePictures(
+    @graphql.Args({ name: "files", type: () => [GraphQLUpload] })
+    files: FileUpload[],
+  ): Promise<string[]> {
+    const awaitFiles = await Promise.all(files.map(async (file) => file));
+
+    return await Promise.all(
+      awaitFiles.map(async (file) => { 
+        return await this.uploadProfilePicture(file);
+      })
+    );
+  }
+
   async _usersMeta(
     @graphql.Args() args: UserCountArgs
   ): Promise<MetaQueryPayload> {
