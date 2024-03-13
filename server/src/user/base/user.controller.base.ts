@@ -28,9 +28,16 @@ import { OrganizationWhereUniqueInput } from "../../organization/base/Organizati
 import { PromoteUserInput } from "./PromoteUserInput";
 import { createWriteStream } from "fs";
 import { FileInterceptor } from "@nestjs/platform-express";
+import { StorageService } from "src/storage/storage.service";
+import { ProvidersEnum } from "src/storage/providers";
+import { StorageFileCore } from "src/storage/core/types.core";
+import { FileDto } from "src/storage/core/File";
 
 export class UserControllerBase {
-  constructor(protected readonly service: UserService) {}
+  constructor(
+    protected readonly service: UserService,
+    protected readonly storageService: StorageService
+  ) {}
 
   @common.Post("/uploadProfilePicture")
   @common.UseInterceptors(FileInterceptor("file"))
@@ -46,30 +53,12 @@ export class UserControllerBase {
       },
     },
   })
-  @swagger.ApiOkResponse({ type: String })
+  @swagger.ApiCreatedResponse({ type: FileDto, status: "2XX" })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
   async uploadProfilePicture(
     @common.UploadedFile() file: Express.Multer.File
-  ): Promise<string> {
-    const { originalname, buffer } = file;
-    console.log("file", file);
-
-    const path = `uploads/${originalname}`;
-
-    const writeStream = createWriteStream(path);
-
-    //store the file in the directory of your choice
-    await new Promise((resolve, reject) => {
-      writeStream.write(buffer, (err) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(0);
-        }
-      });
-    });
-
-    return path;
+  ): Promise<StorageFileCore> {
+    return (await this.storageService.uploadFile(file, ProvidersEnum.LOCAL, ["image"], 1000000));
   }
 
 

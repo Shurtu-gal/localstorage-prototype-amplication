@@ -24,6 +24,9 @@ import { Organization } from "../../organization/base/Organization";
 import { Profile } from "../../profile/base/Profile";
 import { UserService } from "../user.service";
 import { GraphQLUpload } from 'graphql-upload';
+import { StorageService } from "src/storage/storage.service";
+import { ProvidersEnum } from "src/storage/providers";
+import { StorageFileCore } from "src/storage/core/types.core";
 
 interface FileUpload {
   filename: string;
@@ -34,41 +37,29 @@ interface FileUpload {
 
 @graphql.Resolver(() => User)
 export class UserResolverBase {
-  constructor(protected readonly service: UserService) {}
+  constructor(
+    protected readonly service: UserService,
+    protected readonly storageService: StorageService
+  ) {}
 
   @graphql.Mutation(() => String)
   async uploadProfilePicture(
     @graphql.Args({ name: "file", type: () => GraphQLUpload })
     file: FileUpload,
-  ): Promise<string> {
-    // store the file in the directory of your choice
-    const { createReadStream, filename } = file;
-    const stream = createReadStream();
-    const path = `./uploads/${filename}`;
-
-    //if directory does not exist, create it
-    require("fs").mkdirSync("./uploads", { recursive: true });
-
-    await new Promise((resolve, reject) =>
-      stream
-        .pipe(require("fs").createWriteStream(path))
-        .on("finish", resolve)
-        .on("error", reject)
-    );
-
-    return file.filename;
+  ): Promise<StorageFileCore> {
+    return await this.storageService.uploadFile(file, ProvidersEnum.LOCAL, ['image'], 1000000);
   }
 
   @graphql.Mutation(() => [String])
   async uploadProfilePictures(
     @graphql.Args({ name: "files", type: () => [GraphQLUpload] })
     files: FileUpload[],
-  ): Promise<string[]> {
+  ): Promise<StorageFileCore[]> {
     const awaitFiles = await Promise.all(files.map(async (file) => file));
 
     return await Promise.all(
       awaitFiles.map(async (file) => { 
-        return await this.uploadProfilePicture(file);
+        return await this.storageService.uploadFile(file, ProvidersEnum.LOCAL, ['image'], 1000000);
       })
     );
   }
