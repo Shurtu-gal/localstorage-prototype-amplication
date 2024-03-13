@@ -26,14 +26,7 @@ import { UserService } from "../user.service";
 import { GraphQLUpload } from 'graphql-upload';
 import { StorageService } from "src/storage/storage.service";
 import { ProvidersEnum } from "src/storage/providers";
-import { StorageFileCore } from "src/storage/core/types.core";
-
-interface FileUpload {
-  filename: string;
-  mimetype: string;
-  encoding: string
-  createReadStream: () => NodeJS.ReadStream;
-}
+import { FileUpload, StorageFileCore } from "src/storage/core/types.core";
 
 @graphql.Resolver(() => User)
 export class UserResolverBase {
