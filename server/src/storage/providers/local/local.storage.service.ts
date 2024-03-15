@@ -1,7 +1,9 @@
 import { FileUpload } from "src/storage/core/types.core";
 import { LocalStorageFile } from "./types";
-import { Injectable } from "@nestjs/common";
+import { Injectable, StreamableFile } from "@nestjs/common";
 import { ProviderService } from "src/storage/core/storage.core.service";
+import { createReadStream } from 'fs';
+import { join } from 'path';
 
 @Injectable()
 export class LocalStorageService implements ProviderService {
@@ -60,14 +62,20 @@ export class LocalStorageService implements ProviderService {
     }
   }
 
-  async downloadFile(file: LocalStorageFile): Promise<Buffer> {
+  async downloadFile(file: LocalStorageFile): Promise<StreamableFile> {
+    const path = file.uuid;
+    const stream = createReadStream(join(process.cwd(), path))
+    return new StreamableFile(stream);
+  }
+
+  async deleteFile(file: LocalStorageFile): Promise<boolean> {
     const path = file.uuid;
     return new Promise((resolve, reject) =>
-      require("fs").readFile(path, (err: Error, data: Buffer) => {
+      require("fs").unlink(path, (err: Error) => {
         if (err) {
           reject(err);
         } else {
-          resolve(data);
+          resolve(true);
         }
       }
     ));

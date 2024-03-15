@@ -1,11 +1,12 @@
 import { FileExtensionEnum, FileUpload, StorageFileCore } from "./types.core";
 import { ProvidersEnum } from "../providers";
 import { LocalStorageService } from "../providers/local/local.storage.service";
-import { BadRequestException } from "@nestjs/common";
+import { BadRequestException, StreamableFile } from "@nestjs/common";
 
 export interface ProviderService {
   uploadFile(file: FileUpload): Promise<StorageFileCore>;
-  downloadFile(file: StorageFileCore): Promise<Buffer>;
+  downloadFile(file: StorageFileCore): Promise<StreamableFile>;
+  deleteFile(file: StorageFileCore): Promise<boolean>;
 }
 
 export class StorageServiceCore {
@@ -31,18 +32,32 @@ export class StorageServiceCore {
       file.size = size;
     }
 
+    try {
+      switch (provider) {
+        case ProvidersEnum.LOCAL:
+          return this.localStorageProvider.uploadFile(file);
+        default:
+          throw new Error('Provider not implemented');
+      }
+    } catch (error) {
+      console.error(error);
+      throw new Error('Failed to upload file');
+    }
+  }
+
+  async downloadFile(file: StorageFileCore, provider: ProvidersEnum): Promise<StreamableFile> {
     switch (provider) {
       case ProvidersEnum.LOCAL:
-        return this.localStorageProvider.uploadFile(Object.assign(file, { filename: file.filename || (file as Express.Multer.File).originalname }));
+        return this.localStorageProvider.downloadFile(file);
       default:
         throw new Error('Provider not implemented');
     }
   }
 
-  async downloadFile(file: StorageFileCore, provider: ProvidersEnum): Promise<Buffer> {
+  async deleteFile(file: StorageFileCore, provider: ProvidersEnum): Promise<boolean> {
     switch (provider) {
       case ProvidersEnum.LOCAL:
-        return this.localStorageProvider.downloadFile(file);
+        return this.localStorageProvider.deleteFile(file);
       default:
         throw new Error('Provider not implemented');
     }

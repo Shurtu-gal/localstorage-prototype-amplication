@@ -181,6 +181,15 @@ class User {
 
   @ApiProperty({
     required: false,
+  })
+  @IsJSONValue()
+  @Field(() => GraphQLJSON, {
+    nullable: true,
+  })
+  profilePicture?: JsonValue | null;
+
+  @ApiProperty({
+    required: false,
     type: () => Profile,
   })
   @ValidateNested()

@@ -29,7 +29,7 @@ model User {
   extendedProperties Json
   profile            Profile?            @relation(fields: [profileId], references: [id])
   profileId          Int?                @unique
-  picture            Json?
+  profilePicture            Json?
 
   @@unique([name(sort: Desc), email])
   @@index([name, email])

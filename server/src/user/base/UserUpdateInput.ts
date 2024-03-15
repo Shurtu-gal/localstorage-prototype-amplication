@@ -33,6 +33,7 @@ import { OrganizationUpdateManyWithoutUsersInput } from "./OrganizationUpdateMan
 import { EnumUserInterests } from "./EnumUserInterests";
 import { EnumUserPriority } from "./EnumUserPriority";
 import { ProfileWhereUniqueInput } from "../../profile/base/ProfileWhereUniqueInput";
+import { JsonValue } from "type-fest";
 
 @InputType()
 class UserUpdateInput {
@@ -78,6 +79,16 @@ class UserUpdateInput {
     nullable: true,
   })
   name?: string;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsJSONValue()
+  @IsOptional()
+  @Field(() => GraphQLJSON, {
+    nullable: true,
+  })
+  profilePicture?: InputJsonValue;
 
   @ApiProperty({
     required: false,

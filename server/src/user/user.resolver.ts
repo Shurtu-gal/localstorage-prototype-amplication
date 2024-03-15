@@ -6,10 +6,7 @@ import { StorageService } from "src/storage/storage.service";
 
 @graphql.Resolver(() => User)
 export class UserResolver extends UserResolverBase {
-  constructor(
-    protected readonly service: UserService,
-    protected readonly storageService: StorageService
-  ) {
-    super(service, storageService);
+  constructor(protected readonly service: UserService) {
+    super(service);
   }
 }

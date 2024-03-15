@@ -20,9 +20,16 @@ import {
 
 import { PromoteUserArgs } from "./PromoteUserArgs";
 import { PromoteUserInput } from "./PromoteUserInput";
+import { FileUpload, StorageFileCore } from "src/storage/core/types.core";
+import { StorageService } from "src/storage/storage.service";
+import { ProvidersEnum } from "src/storage/providers";
+import { InputJsonValue } from "src/types";
 
 export class UserServiceBase {
-  constructor(protected readonly prisma: PrismaService) {}
+  constructor(
+    protected readonly prisma: PrismaService,
+    protected readonly storageService: StorageService
+  ) {}
 
   async count<T extends Prisma.UserCountArgs>(
     args: Prisma.SelectSubset<T, Prisma.UserCountArgs>
@@ -93,6 +100,39 @@ export class UserServiceBase {
       })
       .profile();
   }
+
+  async uploadProfilePicture<T extends Prisma.UserFindUniqueArgs>(
+    args: Prisma.SelectSubset<T, Prisma.UserFindUniqueArgs>,
+    file: FileUpload,
+  ): Promise<PrismaUser> {
+    file.filename = `profilePicture-${args.where.id}.${file.filename.split(".").pop()}`;
+
+    const profilePicture = await this.storageService.uploadFile(file, ProvidersEnum.LOCAL, ["image"], 1000000);
+    return this.prisma.user.update({
+      where: args.where,
+      data: {
+        profilePicture: profilePicture as InputJsonValue,
+      },
+    });
+  }
+
+  async deleteProfilePicture<T extends Prisma.UserFindUniqueArgs>(
+    args: Prisma.SelectSubset<T, Prisma.UserFindUniqueArgs>,
+  ): Promise<PrismaUser> {
+    const { profilePicture } = await this.prisma.user.findUniqueOrThrow({
+      where: args.where,
+    });
+
+    await this.storageService.deleteFile(profilePicture as unknown as StorageFileCore, ProvidersEnum.LOCAL);
+
+    return this.prisma.user.update({
+      where: args.where,
+      data: {
+        profilePicture: Prisma.DbNull,
+      },
+    });
+  }
+
   async promoteUser(args: PromoteUserArgs): Promise<PromoteUserInput[]> {
     throw new Error("Not implemented");
   }

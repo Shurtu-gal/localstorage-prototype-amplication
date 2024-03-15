@@ -26,20 +26,12 @@ import { OrganizationFindManyArgs } from "../../organization/base/OrganizationFi
 import { Organization } from "../../organization/base/Organization";
 import { OrganizationWhereUniqueInput } from "../../organization/base/OrganizationWhereUniqueInput";
 import { PromoteUserInput } from "./PromoteUserInput";
-import { createWriteStream } from "fs";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { StorageService } from "src/storage/storage.service";
-import { ProvidersEnum } from "src/storage/providers";
-import { StorageFileCore } from "src/storage/core/types.core";
-import { FileDto } from "src/storage/core/File";
 
 export class UserControllerBase {
-  constructor(
-    protected readonly service: UserService,
-    protected readonly storageService: StorageService
-  ) {}
+  constructor(protected readonly service: UserService) {}
 
-  @common.Post("/uploadProfilePicture")
+  @common.Post("/:id/uploadProfilePicture")
   @common.UseInterceptors(FileInterceptor("file"))
   @swagger.ApiConsumes("multipart/form-data")
   @swagger.ApiBody({
@@ -53,12 +45,20 @@ export class UserControllerBase {
       },
     },
   })
-  @swagger.ApiCreatedResponse({ type: FileDto, status: "2XX" })
+  @swagger.ApiParam({
+    name: "id",
+    type: "string",
+    required: true,
+  })
+  @swagger.ApiCreatedResponse({ type: User, status: "2XX" })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
   async uploadProfilePicture(
+    @common.Param() params: UserWhereUniqueInput,
     @common.UploadedFile() file: Express.Multer.File
-  ): Promise<StorageFileCore> {
-    return (await this.storageService.uploadFile(file, ProvidersEnum.LOCAL, ["image"], 1000000));
+  ): Promise<User> {
+    return this.service.uploadProfilePicture({
+      where: params,
+    }, Object.assign(file, { filename: file.originalname }));
   }
 
 

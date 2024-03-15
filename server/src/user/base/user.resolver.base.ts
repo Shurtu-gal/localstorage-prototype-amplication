@@ -32,27 +32,35 @@ import { FileUpload, StorageFileCore } from "src/storage/core/types.core";
 export class UserResolverBase {
   constructor(
     protected readonly service: UserService,
-    protected readonly storageService: StorageService
   ) {}
 
-  @graphql.Mutation(() => String)
+  @graphql.Mutation(() => User)
   async uploadProfilePicture(
     @graphql.Args({ name: "file", type: () => GraphQLUpload })
     file: FileUpload,
-  ): Promise<StorageFileCore> {
-    return await this.storageService.uploadFile(file, ProvidersEnum.LOCAL, ['image'], 1000000);
+    @graphql.Args() args: UserFindUniqueArgs,
+  ): Promise<User> {
+    return await this.service.uploadProfilePicture(args, file);
+  }
+
+  @graphql.Mutation(() => User)
+  async deleteProfilePicture(
+    @graphql.Args() args: UserFindUniqueArgs,
+  ): Promise<User> {
+    return await this.service.deleteProfilePicture(args);
   }
 
   @graphql.Mutation(() => [String])
   async uploadProfilePictures(
     @graphql.Args({ name: "files", type: () => [GraphQLUpload] })
     files: FileUpload[],
-  ): Promise<StorageFileCore[]> {
+  ): Promise<String[]> {
     const awaitFiles = await Promise.all(files.map(async (file) => file));
 
     return await Promise.all(
       awaitFiles.map(async (file) => { 
-        return await this.storageService.uploadFile(file, ProvidersEnum.LOCAL, ['image'], 1000000);
+        // return await this.storageService.uploadFile(file, ProvidersEnum.LOCAL, ['image'], 1000000);
+        return "file";
       })
     );
   }
