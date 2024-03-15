@@ -31,7 +31,7 @@ import { FileInterceptor } from "@nestjs/platform-express";
 export class UserControllerBase {
   constructor(protected readonly service: UserService) {}
 
-  @common.Post("/:id/uploadProfilePicture")
+  @common.Put("/:id/uploadProfilePicture")
   @common.UseInterceptors(FileInterceptor("file"))
   @swagger.ApiConsumes("multipart/form-data")
   @swagger.ApiBody({
