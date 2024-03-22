@@ -24,9 +24,7 @@ import { Organization } from "../../organization/base/Organization";
 import { Profile } from "../../profile/base/Profile";
 import { UserService } from "../user.service";
 import { GraphQLUpload } from 'graphql-upload';
-import { StorageService } from "src/storage/storage.service";
-import { ProvidersEnum } from "src/storage/providers";
-import { FileUpload, StorageFileCore } from "src/storage/core/types.core";
+import { FileUpload } from "src/storage/base/storage.types";
 
 @graphql.Resolver(() => User)
 export class UserResolverBase {
@@ -50,20 +48,20 @@ export class UserResolverBase {
     return await this.service.deleteProfilePicture(args);
   }
 
-  @graphql.Mutation(() => [String])
-  async uploadProfilePictures(
-    @graphql.Args({ name: "files", type: () => [GraphQLUpload] })
-    files: FileUpload[],
-  ): Promise<String[]> {
-    const awaitFiles = await Promise.all(files.map(async (file) => file));
+  // @graphql.Mutation(() => [String])
+  // async uploadProfilePictures(
+  //   @graphql.Args({ name: "files", type: () => [GraphQLUpload] })
+  //   files: FileUpload[],
+  // ): Promise<String[]> {
+  //   const awaitFiles = await Promise.all(files.map(async (file) => file));
 
-    return await Promise.all(
-      awaitFiles.map(async (file) => { 
-        // return await this.storageService.uploadFile(file, ProvidersEnum.LOCAL, ['image'], 1000000);
-        return "file";
-      })
-    );
-  }
+  //   return await Promise.all(
+  //     awaitFiles.map(async (file) => { 
+  //       // return await this.storageService.uploadFile(file, ProvidersEnum.LOCAL, ['image'], 1000000);
+  //       return "file";
+  //     })
+  //   );
+  // }
 
   async _usersMeta(
     @graphql.Args() args: UserCountArgs

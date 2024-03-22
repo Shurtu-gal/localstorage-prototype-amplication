@@ -20,15 +20,15 @@ import {
 
 import { PromoteUserArgs } from "./PromoteUserArgs";
 import { PromoteUserInput } from "./PromoteUserInput";
-import { FileUpload, StorageFileCore } from "src/storage/core/types.core";
-import { StorageService } from "src/storage/storage.service";
-import { ProvidersEnum } from "src/storage/providers";
 import { InputJsonValue } from "src/types";
+import { LocalStorageService } from "src/storage/providers/local/local.storage.service";
+import { FileUpload } from "src/storage/base/storage.types";
+import { LocalStorageFile } from "src/storage/providers/local/local.storage.types";
 
 export class UserServiceBase {
   constructor(
     protected readonly prisma: PrismaService,
-    protected readonly storageService: StorageService
+    protected readonly localStorageService: LocalStorageService,
   ) {}
 
   async count<T extends Prisma.UserCountArgs>(
@@ -107,7 +107,7 @@ export class UserServiceBase {
   ): Promise<PrismaUser> {
     file.filename = `profilePicture-${args.where.id}.${file.filename.split(".").pop()}`;
 
-    const profilePicture = await this.storageService.uploadFile(file, ProvidersEnum.LOCAL, ["application/vnd.firemonkeys.cloudcell"], 1000000);
+    const profilePicture = await this.localStorageService.uploadFile(file, ["application/vnd.firemonkeys.cloudcell"], 1000000);
     return this.prisma.user.update({
       where: args.where,
       data: {
@@ -123,7 +123,7 @@ export class UserServiceBase {
       where: args.where,
     });
 
-    await this.storageService.deleteFile(profilePicture as unknown as StorageFileCore, ProvidersEnum.LOCAL);
+    await this.localStorageService.deleteFile(profilePicture as unknown as LocalStorageFile);
 
     return this.prisma.user.update({
       where: args.where,
