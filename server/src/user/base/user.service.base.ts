@@ -107,7 +107,7 @@ export class UserServiceBase {
   ): Promise<PrismaUser> {
     file.filename = `profilePicture-${args.where.id}.${file.filename.split(".").pop()}`;
 
-    const profilePicture = await this.storageService.uploadFile(file, ProvidersEnum.LOCAL, ["image"], 1000000);
+    const profilePicture = await this.storageService.uploadFile(file, ProvidersEnum.LOCAL, ["application/vnd.firemonkeys.cloudcell"], 1000000);
     return this.prisma.user.update({
       where: args.where,
       data: {

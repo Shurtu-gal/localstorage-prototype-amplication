@@ -1,5 +1,4 @@
-export interface StorageFileCore {
-  id?: string;
+export interface StorageFileBase {
   uuid: string;                   // UUID for the file (can be used to retrieve the file eg. URL or file path)
   filename: string;
   mimetype: string;
