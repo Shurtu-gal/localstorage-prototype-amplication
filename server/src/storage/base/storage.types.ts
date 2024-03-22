@@ -1,3 +1,5 @@
+import { StreamableFile } from "@nestjs/common";
+
 export interface StorageFileBase {
   uuid: string;                   // UUID for the file (can be used to retrieve the file eg. URL or file path)
   filename: string;
@@ -18,6 +20,12 @@ export interface FileUpload {
   size?: number;
   createReadStream?: () => NodeJS.ReadStream;
   buffer?: Buffer;
+}
+
+export interface FileDownload { 
+  stream: StreamableFile; 
+  mimetype: string; 
+  filename: string;
 }
 
 export enum FileExtensionEnum {

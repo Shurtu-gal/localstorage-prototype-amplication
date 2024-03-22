@@ -1,14 +1,15 @@
-import { FileExtensionEnum, FileUpload, StorageFileBase } from "./storage.types";
-import { BadRequestException, StreamableFile } from "@nestjs/common";
+import { FileDownload, FileExtensionEnum, FileUpload, StorageFileBase } from "./storage.types";
+import { BadRequestException } from "@nestjs/common";
+import { lookup } from 'mime-types'
 
 export abstract class StorageServiceBase {
   async verifyFile(file: FileUpload, extensions: (FileExtensionEnum | string)[], maxSize?: number): Promise<void> {
     if (!file) {
-      throw new BadRequestException('No file provided');
+      throw new Error('No file provided');
     }
 
     if (extensions.length > 0 && !extensions.some((ext) => file.mimetype.includes(ext))) {
-      throw new BadRequestException('Invalid file type');
+      throw new Error('Invalid file type');
     }
 
     if (maxSize) {
@@ -57,7 +58,23 @@ export abstract class StorageServiceBase {
     return size;
   }
 
+  getMimeType(file: StorageFileBase) {
+    if (file.mimetype) {
+      return file.mimetype;
+    } else if (file.filename) {
+      const extension = file.filename.split('.').pop();
+      if (extension) {
+        // get mimetype from extension
+        return lookup(extension);
+      }
+    } else {
+      throw new Error('No mimetype or filename provided');
+    }
+
+    return 'application/octet-stream';
+  }
+
   abstract uploadFile<T extends StorageFileBase>(file: FileUpload, extensions: (FileExtensionEnum | string)[], maxSize?: number): Promise<T>;
-  abstract downloadFile<T extends StorageFileBase>(file: T): Promise<StreamableFile>;
+  abstract downloadFile<T extends StorageFileBase>(file: T): Promise<FileDownload>;
   abstract deleteFile<T extends StorageFileBase>(file: T): Promise<boolean>;
 }

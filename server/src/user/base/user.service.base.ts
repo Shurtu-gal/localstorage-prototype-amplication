@@ -22,7 +22,7 @@ import { PromoteUserArgs } from "./PromoteUserArgs";
 import { PromoteUserInput } from "./PromoteUserInput";
 import { InputJsonValue } from "src/types";
 import { LocalStorageService } from "src/storage/providers/local/local.storage.service";
-import { FileUpload } from "src/storage/base/storage.types";
+import { FileDownload, FileUpload } from "src/storage/base/storage.types";
 import { LocalStorageFile } from "src/storage/providers/local/local.storage.types";
 
 export class UserServiceBase {
@@ -107,7 +107,7 @@ export class UserServiceBase {
   ): Promise<PrismaUser> {
     file.filename = `profilePicture-${args.where.id}.${file.filename.split(".").pop()}`;
 
-    const profilePicture = await this.localStorageService.uploadFile(file, ["application/vnd.firemonkeys.cloudcell"], 1000000);
+    const profilePicture = await this.localStorageService.uploadFile(file, ["image"], 1000000);
     return this.prisma.user.update({
       where: args.where,
       data: {
@@ -131,6 +131,16 @@ export class UserServiceBase {
         profilePicture: Prisma.DbNull,
       },
     });
+  }
+
+  async downloadProfilePicture<T extends Prisma.UserFindUniqueArgs>(
+    args: Prisma.SelectSubset<T, Prisma.UserFindUniqueArgs>,
+  ): Promise<FileDownload> {
+    const { profilePicture } = await this.prisma.user.findUniqueOrThrow({
+      where: args.where,
+    });
+
+    return this.localStorageService.downloadFile(profilePicture as unknown as LocalStorageFile);
   }
 
   async promoteUser(args: PromoteUserArgs): Promise<PromoteUserInput[]> {

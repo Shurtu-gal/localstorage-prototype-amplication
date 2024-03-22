@@ -288,7 +288,6 @@ type Mutation {
   updateProfile(data: ProfileUpdateInput!, where: ProfileWhereUniqueInput!): Profile!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User!
   uploadProfilePicture(file: Upload!, where: UserWhereUniqueInput!): User!
-  uploadProfilePictures(files: [Upload!]!): [String!]!
 }
 
 type Order {
