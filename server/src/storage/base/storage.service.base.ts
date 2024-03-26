@@ -3,7 +3,7 @@ import { BadRequestException } from "@nestjs/common";
 import { lookup } from 'mime-types'
 
 export abstract class StorageServiceBase {
-  async verifyFile(file: FileUpload, extensions: (FileExtensionEnum | string)[], maxSize?: number): Promise<void> {
+  protected async verifyFile(file: FileUpload, extensions: (FileExtensionEnum | string)[], maxSize?: number): Promise<void> {
     if (!file) {
       throw new Error('No file provided');
     }
@@ -22,7 +22,7 @@ export abstract class StorageServiceBase {
     }
   }
 
-  async checkFileSize(file: FileUpload, maxSize: number): Promise<number> {
+  protected async checkFileSize(file: FileUpload, maxSize: number): Promise<number> {
     if (file.size && file.size > maxSize) {
       throw new BadRequestException('File size too large');
     } else if (file.size) {
@@ -58,7 +58,7 @@ export abstract class StorageServiceBase {
     return size;
   }
 
-  getMimeType(file: StorageFileBase) {
+  protected getMimeType(file: StorageFileBase) {
     if (file.mimetype) {
       return file.mimetype;
     } else if (file.filename) {
