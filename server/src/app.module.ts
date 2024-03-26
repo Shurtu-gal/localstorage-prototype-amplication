@@ -13,6 +13,7 @@ import { ServeStaticOptionsService } from "./serveStaticOptions.service";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
+import { StorageModule } from './storage/storage.module';
 
 @Module({
   controllers: [],
@@ -26,6 +27,7 @@ import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
     HealthModule,
     PrismaModule,
     SecretsManagerModule,
+    StorageModule,
     ConfigModule.forRoot({ isGlobal: true }),
     ServeStaticModule.forRootAsync({
       useClass: ServeStaticOptionsService,
@@ -45,6 +47,7 @@ import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
       inject: [ConfigService],
       imports: [ConfigModule],
     }),
+    StorageModule,
   ],
   providers: [],
 })
