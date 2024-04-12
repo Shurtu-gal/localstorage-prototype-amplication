@@ -14,11 +14,11 @@ export class LocalStorageService extends StorageServiceBase {
     this.basePath = 'uploads';
   }
 
-  async uploadFile<LocalStorageFile>(file: FileUpload, extensions: string[], maxSize?: number): Promise<LocalStorageFile> {
+  async uploadFile<LocalStorageFile>(file: FileUpload, extensions: string[], maxSize?: number, containerPath?: string): Promise<LocalStorageFile> {
     try {
       await this.verifyFile(file, extensions, maxSize);
       const { createReadStream, filename, buffer } = file;
-      const path = `./${this.basePath}/${filename}`;
+      const path = `./${this.basePath}/${containerPath ? `${containerPath}/` : ''}${filename}`; 
       
       //if directory does not exist, create it
       mkdirSync(`./${this.basePath}`, { recursive: true });

@@ -1,14 +1,15 @@
 import { FileDownload, FileExtensionEnum, FileUpload, StorageFileBase } from "./storage.types";
 import { BadRequestException } from "@nestjs/common";
 import { lookup } from 'mime-types'
+import { minimatch } from 'minimatch'
 
 export abstract class StorageServiceBase {
-  protected async verifyFile(file: FileUpload, extensions: (FileExtensionEnum | string)[], maxSize?: number): Promise<void> {
+  protected async verifyFile(file: FileUpload, mimetypes: string[], maxSize?: number): Promise<void> {
     if (!file) {
       throw new Error('No file provided');
     }
 
-    if (extensions.length > 0 && !extensions.some((ext) => file.mimetype.includes(ext))) {
+    if (mimetypes.length > 0 && !mimetypes.some((pattern) => minimatch(file.mimetype, pattern))) {
       throw new Error('Invalid file type');
     }
 
