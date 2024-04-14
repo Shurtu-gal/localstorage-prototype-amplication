@@ -281,11 +281,13 @@ type Mutation {
   deleteOrder(where: OrderWhereUniqueInput!): Order!
   deleteOrganization(where: OrganizationWhereUniqueInput!): Organization!
   deleteProfile(where: ProfileWhereUniqueInput!): Profile!
+  deleteProfilePicture(where: UserWhereUniqueInput!): User!
   updateCustomer(data: CustomerUpdateInput!, where: CustomerWhereUniqueInput!): Customer!
   updateOrder(data: OrderUpdateInput!, where: OrderWhereUniqueInput!): Order!
   updateOrganization(data: OrganizationUpdateInput!, where: OrganizationWhereUniqueInput!): Organization!
   updateProfile(data: ProfileUpdateInput!, where: ProfileWhereUniqueInput!): Profile!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User!
+  uploadProfilePicture(file: Upload!, where: UserWhereUniqueInput!): User!
 }
 
 type Order {
@@ -521,6 +523,9 @@ input StringNullableFilter {
   startsWith: String
 }
 
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
 type User {
   age: Float!
   bio: String!
@@ -537,6 +542,7 @@ type User {
   organizations(orderBy: [OrganizationOrderByInput!], skip: Float, take: Float, where: OrganizationWhereInput): [Organization!]!
   priority: EnumUserPriority
   profile: Profile
+  profilePicture: JSON
   roles: JSON!
   score: Float!
   username: String!
@@ -613,6 +619,7 @@ input UserUpdateInput {
   password: String
   priority: EnumUserPriority
   profile: ProfileWhereUniqueInput
+  profilePicture: JSON
   roles: JSON
   score: Float
   username: String

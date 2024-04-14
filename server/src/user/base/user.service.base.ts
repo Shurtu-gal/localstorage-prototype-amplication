@@ -20,9 +20,16 @@ import {
 
 import { PromoteUserArgs } from "./PromoteUserArgs";
 import { PromoteUserInput } from "./PromoteUserInput";
+import { InputJsonValue } from "src/types";
+import { LocalStorageService } from "src/storage/providers/local/local.storage.service";
+import { FileDownload, FileUpload } from "src/storage/base/storage.types";
+import { LocalStorageFile } from "src/storage/providers/local/local.storage.types";
 
 export class UserServiceBase {
-  constructor(protected readonly prisma: PrismaService) {}
+  constructor(
+    protected readonly prisma: PrismaService,
+    protected readonly localStorageService: LocalStorageService,
+  ) {}
 
   async count<T extends Prisma.UserCountArgs>(
     args: Prisma.SelectSubset<T, Prisma.UserCountArgs>
@@ -93,6 +100,50 @@ export class UserServiceBase {
       })
       .profile();
   }
+
+  async uploadProfilePicture<T extends Prisma.UserFindUniqueArgs>(
+    args: Prisma.SelectSubset<T, Prisma.UserFindUniqueArgs>,
+    file: FileUpload,
+  ): Promise<PrismaUser> {
+    file.filename = `profilePicture-${args.where.id}.${file.filename.split(".").pop()}`;
+    const containerPath = 'profilePictures';
+
+    const profilePicture = await this.localStorageService.uploadFile(file, ["image"], 1000000, containerPath);
+    return this.prisma.user.update({
+      where: args.where,
+      data: {
+        profilePicture: profilePicture as InputJsonValue,
+      },
+    });
+  }
+
+  async deleteProfilePicture<T extends Prisma.UserFindUniqueArgs>(
+    args: Prisma.SelectSubset<T, Prisma.UserFindUniqueArgs>,
+  ): Promise<PrismaUser> {
+    const { profilePicture } = await this.prisma.user.findUniqueOrThrow({
+      where: args.where,
+    });
+
+    await this.localStorageService.deleteFile(profilePicture as unknown as LocalStorageFile);
+
+    return this.prisma.user.update({
+      where: args.where,
+      data: {
+        profilePicture: Prisma.DbNull,
+      },
+    });
+  }
+
+  async downloadProfilePicture<T extends Prisma.UserFindUniqueArgs>(
+    args: Prisma.SelectSubset<T, Prisma.UserFindUniqueArgs>,
+  ): Promise<FileDownload> {
+    const { profilePicture } = await this.prisma.user.findUniqueOrThrow({
+      where: args.where,
+    });
+
+    return this.localStorageService.downloadFile(profilePicture as unknown as LocalStorageFile);
+  }
+
   async promoteUser(args: PromoteUserArgs): Promise<PromoteUserInput[]> {
     throw new Error("Not implemented");
   }
