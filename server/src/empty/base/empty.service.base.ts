@@ -15,16 +15,14 @@ import { Prisma, Empty as PrismaEmpty } from "@prisma/client";
 export class EmptyServiceBase {
   constructor(protected readonly prisma: PrismaService) {}
 
-  async count<T extends Prisma.EmptyCountArgs>(
-    args: Prisma.SelectSubset<T, Prisma.EmptyCountArgs>
-  ): Promise<number> {
+  async count(args: Omit<Prisma.EmptyCountArgs, "select">): Promise<number> {
     return this.prisma.empty.count(args);
   }
 
   async empties<T extends Prisma.EmptyFindManyArgs>(
     args: Prisma.SelectSubset<T, Prisma.EmptyFindManyArgs>
   ): Promise<PrismaEmpty[]> {
-    return this.prisma.empty.findMany(args);
+    return this.prisma.empty.findMany<Prisma.EmptyFindManyArgs>(args);
   }
   async empty<T extends Prisma.EmptyFindUniqueArgs>(
     args: Prisma.SelectSubset<T, Prisma.EmptyFindUniqueArgs>

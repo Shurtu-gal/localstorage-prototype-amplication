@@ -14,13 +14,13 @@ import { ApiProperty } from "@nestjs/swagger";
 import { StringFilter } from "../../util/StringFilter";
 import { Type } from "class-transformer";
 import { IsOptional, ValidateNested, IsEnum } from "class-validator";
+import { JsonFilter } from "../../util/JsonFilter";
 import { IntFilter } from "../../util/IntFilter";
 import { DateTimeFilter } from "../../util/DateTimeFilter";
 import { UserWhereUniqueInput } from "./UserWhereUniqueInput";
 import { OrganizationListRelationFilter } from "../../organization/base/OrganizationListRelationFilter";
 import { EnumUserPriority } from "./EnumUserPriority";
 import { BooleanFilter } from "../../util/BooleanFilter";
-import { JsonFilter } from "../../util/JsonFilter";
 import { ProfileWhereUniqueInput } from "../../profile/base/ProfileWhereUniqueInput";
 
 @InputType()
@@ -46,6 +46,17 @@ class UserWhereInput {
     nullable: true,
   })
   username?: StringFilter;
+
+  @ApiProperty({
+    required: false,
+    type: JsonFilter,
+  })
+  @Type(() => JsonFilter)
+  @IsOptional()
+  @Field(() => JsonFilter, {
+    nullable: true,
+  })
+  profilePicture?: JsonFilter;
 
   @ApiProperty({
     required: false,

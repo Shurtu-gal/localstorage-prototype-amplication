@@ -21,6 +21,7 @@ CREATE TABLE "users" (
     "id" TEXT NOT NULL,
     "username" TEXT NOT NULL,
     "roles" JSONB NOT NULL,
+    "profilePicture" JSONB,
     "password" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "bio" TEXT NOT NULL,

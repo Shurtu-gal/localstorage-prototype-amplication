@@ -21,16 +21,14 @@ import {
 export class CustomerServiceBase {
   constructor(protected readonly prisma: PrismaService) {}
 
-  async count<T extends Prisma.CustomerCountArgs>(
-    args: Prisma.SelectSubset<T, Prisma.CustomerCountArgs>
-  ): Promise<number> {
+  async count(args: Omit<Prisma.CustomerCountArgs, "select">): Promise<number> {
     return this.prisma.customer.count(args);
   }
 
   async customers<T extends Prisma.CustomerFindManyArgs>(
     args: Prisma.SelectSubset<T, Prisma.CustomerFindManyArgs>
   ): Promise<PrismaCustomer[]> {
-    return this.prisma.customer.findMany(args);
+    return this.prisma.customer.findMany<Prisma.CustomerFindManyArgs>(args);
   }
   async customer<T extends Prisma.CustomerFindUniqueArgs>(
     args: Prisma.SelectSubset<T, Prisma.CustomerFindUniqueArgs>

@@ -1,10 +1,10 @@
-import { ObjectType, Field } from "@nestjs/graphql";
+import { ArgsType, Field } from "@nestjs/graphql";
 import { PromoteUserInput } from "./PromoteUserInput";
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { UserWhereUniqueInput } from "./UserWhereUniqueInput";
+import { UserWhereUniqueInput } from "./base/UserWhereUniqueInput";
 
-@ObjectType()
+@ArgsType()
 class PromoteUserArgs {
     @Field(() => PromoteUserInput, {
         nullable: true

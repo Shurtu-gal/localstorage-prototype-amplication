@@ -17,8 +17,8 @@ async function main() {
   const app = await NestFactory.create(AppModule, { cors: true });
 
   app.use(
-    '/graphql',
-    graphqlUploadExpress({ maxFileSize: 50000000, maxFiles: 10 }),
+    "/graphql",
+    graphqlUploadExpress({ maxFileSize: 50000000, maxFiles: 10 })
   );
 
   app.setGlobalPrefix("api");

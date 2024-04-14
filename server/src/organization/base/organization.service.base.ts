@@ -21,8 +21,8 @@ import {
 export class OrganizationServiceBase {
   constructor(protected readonly prisma: PrismaService) {}
 
-  async count<T extends Prisma.OrganizationCountArgs>(
-    args: Prisma.SelectSubset<T, Prisma.OrganizationCountArgs>
+  async count(
+    args: Omit<Prisma.OrganizationCountArgs, "select">
   ): Promise<number> {
     return this.prisma.organization.count(args);
   }
@@ -30,7 +30,9 @@ export class OrganizationServiceBase {
   async organizations<T extends Prisma.OrganizationFindManyArgs>(
     args: Prisma.SelectSubset<T, Prisma.OrganizationFindManyArgs>
   ): Promise<PrismaOrganization[]> {
-    return this.prisma.organization.findMany(args);
+    return this.prisma.organization.findMany<Prisma.OrganizationFindManyArgs>(
+      args
+    );
   }
   async organization<T extends Prisma.OrganizationFindUniqueArgs>(
     args: Prisma.SelectSubset<T, Prisma.OrganizationFindUniqueArgs>

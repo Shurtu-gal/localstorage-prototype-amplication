@@ -16,6 +16,7 @@ import * as errors from "../../errors";
 import { Request, Response } from "express";
 import { plainToClass } from "class-transformer";
 import { ApiNestedQuery } from "../../decorators/api-nested-query.decorator";
+import { FileInterceptor } from "@nestjs/platform-express";
 import { UserService } from "../user.service";
 import { UserCreateInput } from "./UserCreateInput";
 import { User } from "./User";
@@ -25,82 +26,10 @@ import { UserFindManyArgs } from "./UserFindManyArgs";
 import { OrganizationFindManyArgs } from "../../organization/base/OrganizationFindManyArgs";
 import { Organization } from "../../organization/base/Organization";
 import { OrganizationWhereUniqueInput } from "../../organization/base/OrganizationWhereUniqueInput";
-import { PromoteUserInput } from "./PromoteUserInput";
-import { FileInterceptor } from "@nestjs/platform-express";
+import { PromoteUserInput } from "../PromoteUserInput";
 
 export class UserControllerBase {
   constructor(protected readonly service: UserService) {}
-
-  @common.Put("/:id/profilePicture")
-  @common.UseInterceptors(FileInterceptor("file"))
-  @swagger.ApiConsumes("multipart/form-data")
-  @swagger.ApiBody({
-    schema: {
-      type: "object",
-      properties: {
-        file: {
-          type: "string",
-          format: "binary",
-        },
-      },
-    },
-  })
-  @swagger.ApiParam({
-    name: "id",
-    type: "string",
-    required: true,
-  })
-  @swagger.ApiCreatedResponse({ type: User, status: "2XX" })
-  @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
-  async uploadProfilePicture(
-    @common.Param() 
-    params: UserWhereUniqueInput,
-    @common.UploadedFile() 
-    file: Express.Multer.File
-  ): Promise<User> {
-    return this.service.uploadProfilePicture({
-      where: params,
-    }, Object.assign(file, { filename: file.originalname }));
-  }
-
-  @common.Get(":id/profilePicture")
-  @swagger.ApiParam({
-    name: "id",
-    type: "string",
-    required: true,
-  })
-  @swagger.ApiOkResponse({ type: common.StreamableFile })
-  @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
-  async downloadProfilePicture(
-    @common.Param() params: UserWhereUniqueInput,
-    @common.Res({ passthrough: true }) res: Response
-  ): Promise<common.StreamableFile> {
-    const result = await this.service.downloadProfilePicture({
-      where: params,
-    });
-
-    if (result === null) {
-      throw new errors.NotFoundException(
-        `No resource was found for ${JSON.stringify(params)}`
-      );
-    }
-    res.setHeader("Content-Disposition", `attachment; filename=${result.filename}`);
-    res.setHeader("Content-Type", result.mimetype);
-    
-    return result.stream;
-  }
-
-  @common.Delete("/:id/profilePicture")
-  @swagger.ApiOkResponse({ type: User })
-  @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
-  async deleteProfilePicture(
-    @common.Param() params: UserWhereUniqueInput
-  ): Promise<User> {
-    return this.service.deleteProfilePicture({
-      where: params,
-    });
-  }
-
   @common.Post()
   @swagger.ApiCreatedResponse({ type: User })
   async createUser(@common.Body() data: UserCreateInput): Promise<User> {
@@ -124,6 +53,7 @@ export class UserControllerBase {
         id: true,
         username: true,
         roles: true,
+        profilePicture: true,
         name: true,
         bio: true,
         email: true,
@@ -164,6 +94,7 @@ export class UserControllerBase {
         id: true,
         username: true,
         roles: true,
+        profilePicture: true,
         name: true,
         bio: true,
         email: true,
@@ -188,8 +119,6 @@ export class UserControllerBase {
             id: true,
           },
         },
-
-        profilePicture: true,
       },
     });
     if (result === null) {
@@ -229,6 +158,7 @@ export class UserControllerBase {
           id: true,
           username: true,
           roles: true,
+          profilePicture: true,
           name: true,
           bio: true,
           email: true,
@@ -265,6 +195,104 @@ export class UserControllerBase {
     }
   }
 
+  @common.Put(":id/profilePicture")
+  @common.UseInterceptors(FileInterceptor("file"))
+  @swagger.ApiConsumes("multipart/form-data")
+  @swagger.ApiBody({
+    schema: {
+      type: "object",
+
+      properties: {
+        file: {
+          type: "string",
+          format: "binary",
+        },
+      },
+    },
+  })
+  @swagger.ApiParam({
+    name: "id",
+    type: "string",
+    required: true,
+  })
+  @swagger.ApiCreatedResponse({
+    type: User,
+    status: "2XX",
+  })
+  @swagger.ApiNotFoundResponse({
+    type: errors.NotFoundException,
+  })
+  async uploadProfilePicture(
+    @common.Param()
+    params: UserWhereUniqueInput,
+    @common.UploadedFile()
+    file: Express.Multer.File
+  ): Promise<User> {
+    return this.service.uploadProfilePicture(
+      {
+        where: params,
+      },
+      Object.assign(file, {
+        filename: file.originalname,
+      })
+    );
+  }
+
+  @common.Get(":id/profilePicture")
+  @swagger.ApiParam({
+    name: "id",
+    type: "string",
+    required: true,
+  })
+  @swagger.ApiOkResponse({
+    type: common.StreamableFile,
+  })
+  @swagger.ApiNotFoundResponse({
+    type: errors.NotFoundException,
+  })
+  async downloadProfilePicture(
+    @common.Param()
+    params: UserWhereUniqueInput,
+    @common.Res({
+      passthrough: true,
+    })
+    res: Response
+  ): Promise<common.StreamableFile> {
+    const result = await this.service.downloadProfilePicture({
+      where: params,
+    });
+
+    if (result === null) {
+      throw new errors.NotFoundException(
+        "No resource was found for ",
+        JSON.stringify(params)
+      );
+    }
+
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=${result.filename}`
+    );
+    res.setHeader("Content-Type", result.mimetype);
+    return result.stream;
+  }
+
+  @common.Delete(":id/profilePicture")
+  @swagger.ApiOkResponse({
+    type: User,
+  })
+  @swagger.ApiNotFoundResponse({
+    type: errors.NotFoundException,
+  })
+  async deleteProfilePicture(
+    @common.Param()
+    params: UserWhereUniqueInput
+  ): Promise<User> {
+    return this.service.deleteProfilePicture({
+      where: params,
+    });
+  }
+
   @common.Get("/:id/employees")
   @ApiNestedQuery(UserFindManyArgs)
   async findEmployees(
@@ -278,6 +306,7 @@ export class UserControllerBase {
         id: true,
         username: true,
         roles: true,
+        profilePicture: true,
         name: true,
         bio: true,
         email: true,

@@ -282,6 +282,9 @@ type Mutation {
   deleteOrganization(where: OrganizationWhereUniqueInput!): Organization!
   deleteProfile(where: ProfileWhereUniqueInput!): Profile!
   deleteProfilePicture(where: UserWhereUniqueInput!): User!
+  promoteUser(data: PromoteUserInputInput, query: UserWhereUniqueInput!, where: UserWhereUniqueInput!): [PromoteUserInputObject!]!
+  sendPasswordResetEmail(extendedProfile: JSON, isAdmin: Boolean!, lastLogin: DateTime!, score: Float!, selfReference: PromoteUserInputInput, selfReferenceArray: [PromoteUserInputInput!], userId: [String!]!, weightedScore: Float): Boolean!
+  softDeleteUser(extendedProfile: JSON, isAdmin: Boolean!, lastLogin: DateTime!, score: Float!, selfReference: PromoteUserInputInput, selfReferenceArray: [PromoteUserInputInput!], userId: [String!]!, weightedScore: Float): PromoteUserInputObject!
   updateCustomer(data: CustomerUpdateInput!, where: CustomerWhereUniqueInput!): Customer!
   updateOrder(data: OrderUpdateInput!, where: OrderWhereUniqueInput!): Order!
   updateOrganization(data: OrganizationUpdateInput!, where: OrganizationWhereUniqueInput!): Organization!
@@ -458,13 +461,24 @@ input ProfileWhereUniqueInput {
   id: Float!
 }
 
-type PromoteUserInput {
+input PromoteUserInputInput {
   extendedProfile: JSON
   isAdmin: Boolean!
   lastLogin: DateTime!
   score: Float!
-  selfReference: PromoteUserInput
-  selfReferenceArray: [PromoteUserInput!]
+  selfReference: PromoteUserInputInput
+  selfReferenceArray: [PromoteUserInputInput!]
+  userId: [String!]!
+  weightedScore: Float
+}
+
+type PromoteUserInputObject {
+  extendedProfile: JSON
+  isAdmin: Boolean!
+  lastLogin: DateTime!
+  score: Float!
+  selfReference: PromoteUserInputObject
+  selfReferenceArray: [PromoteUserInputObject!]
   userId: [String!]!
   weightedScore: Float
 }
@@ -480,6 +494,7 @@ type Query {
   organizations(orderBy: [OrganizationOrderByInput!], skip: Float, take: Float, where: OrganizationWhereInput): [Organization!]!
   profile(where: ProfileWhereUniqueInput!): Profile
   profiles(orderBy: [ProfileOrderByInput!], skip: Float, take: Float, where: ProfileWhereInput): [Profile!]!
+  resendInviteEmail(extendedProfile: JSON, isAdmin: Boolean!, lastLogin: DateTime!, score: Float!, selfReference: PromoteUserInputInput, selfReferenceArray: [PromoteUserInputInput!], userId: [String!]!, weightedScore: Float): PromoteUserInputObject!
   user(where: UserWhereUniqueInput!): User
 }
 
@@ -564,6 +579,7 @@ input UserCreateInput {
   password: String!
   priority: EnumUserPriority!
   profile: ProfileWhereUniqueInput
+  profilePicture: JSON
   roles: JSON!
   score: Float!
   username: String!
@@ -598,6 +614,7 @@ input UserOrderByInput {
   password: SortOrder
   priority: SortOrder
   profileId: SortOrder
+  profilePicture: SortOrder
   roles: SortOrder
   score: SortOrder
   username: SortOrder
@@ -650,6 +667,7 @@ input UserWhereInput {
   organizations: OrganizationListRelationFilter
   priority: EnumUserPriority
   profile: ProfileWhereUniqueInput
+  profilePicture: JsonFilter
   username: StringFilter
 }
 

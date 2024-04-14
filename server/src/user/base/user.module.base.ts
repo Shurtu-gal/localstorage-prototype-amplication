@@ -11,9 +11,8 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { Module } from "@nestjs/common";
 import { StorageModule } from "src/storage/storage.module";
-
 @Module({
   imports: [StorageModule],
-  exports: [],
+  exports: [StorageModule],
 })
 export class UserModuleBase {}

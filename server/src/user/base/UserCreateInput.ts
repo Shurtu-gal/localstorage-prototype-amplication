@@ -14,11 +14,11 @@ import { ApiProperty } from "@nestjs/swagger";
 
 import {
   IsString,
+  IsOptional,
   IsInt,
   IsDate,
   IsNumber,
   ValidateNested,
-  IsOptional,
   IsEnum,
   IsBoolean,
 } from "class-validator";
@@ -50,6 +50,16 @@ class UserCreateInput {
   @IsJSONValue()
   @Field(() => GraphQLJSON)
   roles!: InputJsonValue;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsJSONValue()
+  @IsOptional()
+  @Field(() => GraphQLJSON, {
+    nullable: true,
+  })
+  profilePicture?: InputJsonValue;
 
   @ApiProperty({
     required: true,

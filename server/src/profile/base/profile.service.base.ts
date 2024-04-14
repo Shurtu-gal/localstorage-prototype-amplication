@@ -19,16 +19,14 @@ import {
 export class ProfileServiceBase {
   constructor(protected readonly prisma: PrismaService) {}
 
-  async count<T extends Prisma.ProfileCountArgs>(
-    args: Prisma.SelectSubset<T, Prisma.ProfileCountArgs>
-  ): Promise<number> {
+  async count(args: Omit<Prisma.ProfileCountArgs, "select">): Promise<number> {
     return this.prisma.profile.count(args);
   }
 
   async profiles<T extends Prisma.ProfileFindManyArgs>(
     args: Prisma.SelectSubset<T, Prisma.ProfileFindManyArgs>
   ): Promise<PrismaProfile[]> {
-    return this.prisma.profile.findMany(args);
+    return this.prisma.profile.findMany<Prisma.ProfileFindManyArgs>(args);
   }
   async profile<T extends Prisma.ProfileFindUniqueArgs>(
     args: Prisma.SelectSubset<T, Prisma.ProfileFindUniqueArgs>

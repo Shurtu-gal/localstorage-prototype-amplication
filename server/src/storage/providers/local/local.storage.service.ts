@@ -1,8 +1,19 @@
 import { FileDownload, FileUpload } from "../../base/storage.types";
 import { LocalStorageFile } from "./local.storage.types";
-import { BadRequestException, Injectable, StreamableFile } from "@nestjs/common";
-import { createReadStream, mkdirSync, createWriteStream, writeFile, unlink } from 'fs';
-import { join } from 'path';
+import {
+  BadRequestException,
+  Injectable,
+  StreamableFile,
+  NotFoundException,
+} from "@nestjs/common";
+import {
+  createReadStream,
+  mkdirSync,
+  createWriteStream,
+  writeFile,
+  unlink,
+} from "fs";
+import { join } from "path";
 import { StorageServiceBase } from "src/storage/base/storage.service.base";
 
 @Injectable()
@@ -11,18 +22,24 @@ export class LocalStorageService extends StorageServiceBase {
 
   constructor() {
     super();
-    this.basePath = 'uploads';
+    this.basePath = "uploads";
   }
 
-  async uploadFile<LocalStorageFile>(file: FileUpload, extensions: string[], maxSize?: number, containerPath?: string): Promise<LocalStorageFile> {
+  async uploadFile<LocalStorageFile>(
+    file: FileUpload,
+    extensions: string[],
+    maxSize?: number,
+    containerPath?: string,
+  ): Promise<LocalStorageFile> {
     try {
       await this.verifyFile(file, extensions, maxSize);
       const { createReadStream, filename, buffer } = file;
-      const path = `./${this.basePath}/${containerPath ? `${containerPath}/` : ''}${filename}`; 
-      
-      //if directory does not exist, create it
-      mkdirSync(`./${this.basePath}`, { recursive: true });
+      const path = `./${this.basePath}/${
+        containerPath ? `${containerPath}/` : ""
+      }${filename}`;
 
+      //if directory does not exist, create it
+      mkdirSync(`./${this.basePath}/${containerPath}`, { recursive: true });
       const uploadFile = {
         filename,
         uuid: path,
@@ -38,9 +55,9 @@ export class LocalStorageService extends StorageServiceBase {
         await new Promise((resolve, reject) =>
           createReadStream()
             .pipe(createWriteStream(path))
-            .on('finish', resolve)
-            .on('error', reject)        
-        ); 
+            .on("finish", resolve)
+            .on("error", reject),
+        );
       } else if (buffer) {
         await new Promise((resolve, reject) =>
           writeFile(path, buffer, (err) => {
@@ -49,10 +66,10 @@ export class LocalStorageService extends StorageServiceBase {
             } else {
               resolve(true);
             }
-          })
+          }),
         );
       } else {
-        throw new Error('Neither createReadStream nor buffer provided');
+        throw new Error("Neither createReadStream nor buffer provided");
       }
 
       return uploadFile;
@@ -63,15 +80,19 @@ export class LocalStorageService extends StorageServiceBase {
 
   async downloadFile(file: LocalStorageFile): Promise<FileDownload> {
     const path = file.uuid;
-    const stream = createReadStream(join(process.cwd(), path))
+    const stream = createReadStream(join(process.cwd(), path));
     return {
       stream: new StreamableFile(stream),
-      mimetype: this.getMimeType(file) || 'application/octet-stream',
+      mimetype: this.getMimeType(file) || "application/octet-stream",
       filename: file.filename,
-    }
+    };
   }
 
   async deleteFile(file: LocalStorageFile): Promise<boolean> {
+    if (!file || !file.uuid) {
+      throw new NotFoundException("File not found");
+    }
+
     const path = file.uuid;
     return new Promise((resolve, reject) =>
       unlink(path, (err) => {
@@ -80,7 +101,7 @@ export class LocalStorageService extends StorageServiceBase {
         } else {
           resolve(true);
         }
-      }
-    ));
+      }),
+    );
   }
 }

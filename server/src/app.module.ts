@@ -8,16 +8,17 @@ import { EmptyModule } from "./empty/empty.module";
 import { HealthModule } from "./health/health.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { SecretsManagerModule } from "./providers/secrets/secretsManager.module";
+import { StorageModule } from "./storage/storage.module";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { ServeStaticOptionsService } from "./serveStaticOptions.service";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
-import { StorageModule } from './storage/storage.module';
 
 @Module({
   controllers: [],
   imports: [
+    StorageModule,
     UserModule,
     ProfileModule,
     OrderModule,
@@ -27,7 +28,6 @@ import { StorageModule } from './storage/storage.module';
     HealthModule,
     PrismaModule,
     SecretsManagerModule,
-    StorageModule,
     ConfigModule.forRoot({ isGlobal: true }),
     ServeStaticModule.forRootAsync({
       useClass: ServeStaticOptionsService,
@@ -47,7 +47,6 @@ import { StorageModule } from './storage/storage.module';
       inject: [ConfigService],
       imports: [ConfigModule],
     }),
-    StorageModule,
   ],
   providers: [],
 })

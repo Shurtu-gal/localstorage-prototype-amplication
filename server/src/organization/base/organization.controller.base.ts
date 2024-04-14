@@ -153,6 +153,7 @@ export class OrganizationControllerBase {
         id: true,
         username: true,
         roles: true,
+        profilePicture: true,
         name: true,
         bio: true,
         email: true,
